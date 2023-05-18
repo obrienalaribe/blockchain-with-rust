@@ -37,12 +37,12 @@ pub struct Header {
 impl Header {
     /// Returns a new valid genesis header.
     fn genesis() -> Self {
-        todo!("Exercise 1")
+        Header { parent: 0, height: 0, extrinsic: 0, state: 0, consensus_digest: 0 }
     }
 
     /// Create and return a valid child header.
     fn child(&self, extrinsic: u64) -> Self {
-        todo!("Exercise 2")
+        Header{ parent: hash(&self), height: self.height + 1, extrinsic: extrinsic, state: self.state + extrinsic, consensus_digest: 0 }
     }
 
     /// Verify that all the given headers form a valid chain from this header to the tip.
@@ -50,7 +50,17 @@ impl Header {
     /// In addition to all the rules we had before, we now need to check that the block hash
     /// is below a specific threshold.
     fn verify_sub_chain(&self, chain: &[Header]) -> bool {
-        todo!("Exercise 3")
+        if chain.len() == 0  {
+            return true
+        }
+        let mut is_valid = false;
+        for i in 0..chain.len() {
+            println!("{} < {}", hash(&self), THRESHOLD);
+            if self.height + 1 == chain[i].height && hash(&self) == chain[i].parent && chain[i].state == self.state + chain[i].extrinsic {
+                is_valid = true;
+            }
+        }
+        is_valid
     }
 
     // After the blockchain ran for a while, a political rift formed in the community.

@@ -1,6 +1,9 @@
 //! We begin our hands on exploration of state machines with two very simple examples.
 //! In these examples, we use actually switch boards as the state machine. The state is,
 //! well, just the state of the switches.
+#![allow(dead_code)]
+#![allow(unused_variables)]
+
 
 use super::StateMachine;
 
@@ -15,7 +18,7 @@ impl StateMachine for LightSwitch {
     type Transition = ();
 
     fn next_state(starting_state: &bool, t: &()) -> bool {
-        todo!("Exercise 1")
+        !starting_state
     }
 }
 
@@ -24,7 +27,7 @@ impl StateMachine for LightSwitch {
 pub struct WeirdSwitchMachine;
 
 /// The state is now two switches instead of one so we use a struct.
-#[derive(PartialEq, Eq, Debug)]
+#[derive(PartialEq, Eq, Debug, Clone)]
 pub struct TwoSwitches {
     first_switch: bool,
     second_switch: bool,
@@ -42,9 +45,38 @@ impl StateMachine for WeirdSwitchMachine {
     type Transition = Toggle;
 
     fn next_state(starting_state: &TwoSwitches, t: &Toggle) -> TwoSwitches {
-        todo!("Exercise 2")
+
+        match *t {
+            Toggle::FirstSwitch  => {
+                if starting_state.first_switch == true {
+                    return TwoSwitches{
+                        first_switch: false,
+                        second_switch: false
+                    }
+                }
+                return TwoSwitches{
+                    first_switch: true,
+                    second_switch: false
+                }
+            }
+
+            Toggle::SecondSwitch => {
+                if starting_state.second_switch == false && starting_state.first_switch {
+                    return TwoSwitches {
+                        first_switch: starting_state.first_switch,
+                        second_switch: !starting_state.second_switch
+                    }
+                }
+
+                return TwoSwitches{
+                    first_switch: starting_state.first_switch,
+                    second_switch: !starting_state.second_switch
+                }
+            }
+        }
     }
 }
+
 
 #[test]
 fn sm_1_light_switch_toggles_off() {

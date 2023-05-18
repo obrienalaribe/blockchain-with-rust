@@ -1,5 +1,6 @@
 //! This module is all about modeling phenomena and systems as state machines. We begin with a few simple
 //! examples, and then proceed to build bigger and more complex state machines all implementing the same simple interface.
+#![allow(unused)]
 
 mod p1_switches;
 mod p2_laundry_machine;
